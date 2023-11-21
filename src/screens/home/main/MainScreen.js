@@ -11,6 +11,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import ItemHome from "components/common/ItemHome";
 import { API_URL } from "../../../config/api";
+import { moq } from "../../../config/api";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -25,7 +26,7 @@ const MainScreen = ({ navigation }) => {
             cate_id: 1,
             page_no: 1,
             page_size: 10,
-            moq: 2111,
+            moq: moq,
           },
         });
         setData(response.data.data);

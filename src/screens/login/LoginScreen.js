@@ -7,15 +7,17 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import ButtonSocial from "components/common/ButtonSocial";
 import CustomButton from "components/common/CustomButton";
 import { useState } from "react";
 
-function LoginScreen() {
-  const navigation = useNavigation();
+function LoginScreen({ navigation }) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+
+  const toNext = () => {
+    navigation.navigate("LoginInput");
+  };
 
   return (
     <ImageBackground
@@ -50,23 +52,17 @@ function LoginScreen() {
         </Text>
 
         <ButtonSocial
-          onPress={() => {
-            navigation.navigate("LoginInput");
-          }}
+          onPress={toNext}
           title="Tiếp tục với Facebook"
           icon="img/facebook.png"
         />
         <ButtonSocial
-          onPress={() => {
-            navigation.navigate("LoginInput");
-          }}
+          onPress={toNext}
           title="Tiếp tục với Google"
           icon="img/google.png"
         />
         <ButtonSocial
-          onPress={() => {
-            navigation.navigate("LoginInput");
-          }}
+          onPress={toNext}
           title="Tiếp tục với Apple"
           icon="img/apple.png"
         />
@@ -80,9 +76,7 @@ function LoginScreen() {
               borderColor: "white",
             },
           ]}
-          onPress={() => {
-            navigation.navigate("LoginInput");
-          }}
+          onPress={toNext}
         >
           <View style={styles.buttonContent}>
             <Image source={require("icon/email.png")} style={styles.icon} />
