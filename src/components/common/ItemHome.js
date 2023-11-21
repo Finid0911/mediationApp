@@ -13,7 +13,7 @@ const ItemHome = ({ item, onPress }) => {
           </Text>
           <View style={styles.rightView}>
             <Image
-              source={require("img/Vector.png")}
+              source={require("icon/Vector.png")}
               style={styles.rightIcon}
             />
             <Text style={styles.rightTxt}> {item.like} </Text>

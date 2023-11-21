@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, Pressable } from "react-native";
 import timeVidConverter from "../../config/timeVidConverter";
 
 export default VideoPlayView = ({ item, onPress }) => {
@@ -6,10 +6,10 @@ export default VideoPlayView = ({ item, onPress }) => {
   return (
     <View style={style.container}>
       <View style={style.leftContainer}>
-        <View style={style.blur}>
+        <Pressable style={style.blur} onPress={() => onPress(item.id)}>
           <Image source={{ uri: item.thumb }} style={style.vidImg} />
-          <Image source={require("img/play2.png")} style={style.playImg} />
-        </View>
+          <Image source={require("icon/play2.png")} style={style.playImg} />
+        </Pressable>
         <View style={style.content}>
           <Text style={style.contentTxt}>{timeConverter}</Text>
         </View>
