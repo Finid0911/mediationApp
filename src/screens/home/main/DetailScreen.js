@@ -137,9 +137,7 @@ export default DetailScreen = ({ route, navigation }) => {
           </View>
           <View style={style.content}>
             <Text style={style.vidNum}>Bài giảng ({data.number_audio})</Text>
-            {/* {vidData.map(({ item }) => {
-                <VideoPlayView item={item} />;
-              })} */}
+
             <FlatList
               scrollEnabled={false}
               data={vidData}
