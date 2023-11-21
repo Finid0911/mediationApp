@@ -11,6 +11,7 @@ import {
   Dimensions,
 } from "react-native";
 import { API_URL } from "../../../config/api";
+import { moq } from "../../../config/api";
 import { useState, useEffect } from "react";
 import VideoPlayView from "components/common/VideoPlayView";
 import axios from "axios";
@@ -36,7 +37,7 @@ export default DetailScreen = ({ route, navigation }) => {
             os: "android",
             token_user: "01982yfho8ds7619and",
             secure_code: "01982yfho8ds7619and",
-            moq: 2111,
+            moq: moq,
             dev: 1,
           },
         });
@@ -56,7 +57,7 @@ export default DetailScreen = ({ route, navigation }) => {
             os: "android",
             token_user: "123123",
             secure_code: "01982yfho8ds7619and",
-            moq: 2111,
+            moq: moq,
             dev: 1,
           },
         });
@@ -136,9 +137,7 @@ export default DetailScreen = ({ route, navigation }) => {
           </View>
           <View style={style.content}>
             <Text style={style.vidNum}>Bài giảng ({data.number_audio})</Text>
-            {/* {vidData.map(({ item }) => {
-                <VideoPlayView item={item} />;
-              })} */}
+
             <FlatList
               scrollEnabled={false}
               data={vidData}
@@ -179,6 +178,10 @@ const style = StyleSheet.create({
   },
   topBtn: {
     flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 20,
+    marginRight: 20,
+    justifyContent: "space-between",
   },
   topIcon: {
     width: 32,
@@ -190,12 +193,12 @@ const style = StyleSheet.create({
   topLeftIcon: {
     width: 32,
     height: 32,
-    left: 15,
+    //marginRight: "auto",
   },
   topRightIcon: {
     width: 32,
     height: 32,
-    left: 300,
+    //marginLeft: "auto",
   },
   infoBar: {
     flexDirection: "row",
@@ -207,8 +210,6 @@ const style = StyleSheet.create({
     borderRadius: 16,
     gap: 4,
     position: "absolute",
-    // paddingLeft: 8,
-    // paddingRight: 8,
   },
   rightView: {
     flexDirection: "row",

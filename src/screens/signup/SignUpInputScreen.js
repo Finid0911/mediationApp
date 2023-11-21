@@ -9,12 +9,9 @@ import {
   Pressable,
 } from "react-native";
 import CustomTextInput from "components/common/CustomTextInput";
-import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 
-function SignUpScreen1() {
-  const navigation = useNavigation();
-
+function SignUpScreen1({ navigation }) {
   return (
     <View style={styles.overall}>
       <View style={styles.header}>

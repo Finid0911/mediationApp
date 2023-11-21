@@ -9,15 +9,13 @@ import {
   Pressable,
 } from "react-native";
 import CustomTextInput from "components/common/CustomTextInput";
-import { useNavigation } from "@react-navigation/native";
 import CustomButton from "components/common/CustomButton";
 import { API_URL } from "../../config/api";
 import { validateEmail, validatePassword } from "../../config/validate";
 import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
 
-function LoginScreen1() {
-  const navigation = useNavigation();
+function LoginScreen1({ navigation }) {
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [revealPassword, setRevealPassword] = useState(true);
