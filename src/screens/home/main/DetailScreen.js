@@ -133,7 +133,7 @@ export default DetailScreen = ({ route, navigation }) => {
               contentWidth={width}
               baseStyle={style.contentText}
             />
-            <Text style={style.contentText}>Xem thêm</Text>
+            <Text style={style.contentText}>Xem thêm (Optional)</Text>
           </View>
           <View style={style.content}>
             <Text style={style.vidNum}>Bài giảng ({data.number_audio})</Text>

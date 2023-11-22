@@ -8,7 +8,28 @@ import {
 } from "react-native";
 import { API_URL } from "../../../config/api";
 import { useState, useEffect } from "react";
-import axios from "axios";
+
+const tracks = [
+  {
+    id: 1,
+    url: require("../../../assets/audio/CallMe.mp3"),
+    title: "Call me",
+  },
+  {
+    id: 2,
+    url: require("../../../assets/audio/KidzZone.mp3"),
+    title: "Kidz Zone",
+  },
+];
+
+// TrackPlayer.updateOptions({
+//   stopWithApp: false,
+//   capabilities: [TrackPlayer.CAPABILITY_PLAY, TrackPlayer.CAPABILITY_PAUSE],
+//   compactCapabilities: [
+//     TrackPlayer.CAPABILITY_PLAY,
+//     TrackPlayer.CAPABILITY_PAUSE,
+//   ],
+// });
 
 export default PlayScreen = ({ route, navigation }) => {
   const {
@@ -23,6 +44,22 @@ export default PlayScreen = ({ route, navigation }) => {
   const back = () => {
     navigation.goBack();
   };
+
+  // const setUpTrackPlayer = async () => {
+  //   try {
+  //     await TrackPlayer.setupPlayer();
+  //     await TrackPlayer.add(tracks);
+  //     console.log("Tracks added");
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   setUpTrackPlayer();
+
+  //   return () => TrackPlayer.destroy();
+  // }, []);
 
   return (
     <ImageBackground
@@ -49,6 +86,14 @@ export default PlayScreen = ({ route, navigation }) => {
           <View>
             <Pressable>
               <Image />
+            </Pressable>
+          </View>
+          <View>
+            <Pressable>
+              <Text>Play</Text>
+            </Pressable>
+            <Pressable>
+              <Text>Pause</Text>
             </Pressable>
           </View>
         </View>
