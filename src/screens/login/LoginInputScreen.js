@@ -87,7 +87,7 @@ function LoginScreen1({ navigation }) {
           >
             <Image
               source={
-                setRevealPassword
+                revealPassword
                   ? require("icon/show.png")
                   : require("icon/hide.png")
               }

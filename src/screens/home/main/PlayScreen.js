@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { API_URL } from "../../../config/api";
 import { useState, useEffect } from "react";
+import { Audio } from "expo-av";
 
 const tracks = [
   {
@@ -45,21 +46,53 @@ export default PlayScreen = ({ route, navigation }) => {
     navigation.goBack();
   };
 
-  // const setUpTrackPlayer = async () => {
-  //   try {
-  //     await TrackPlayer.setupPlayer();
-  //     await TrackPlayer.add(tracks);
-  //     console.log("Tracks added");
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const [sound, setSound] = useState();
+  const [isPlaying, setPlaying] = useState(false);
+  const [isSaved, setSaved] = useState(false);
 
-  // useEffect(() => {
-  //   setUpTrackPlayer();
+  async function playSound() {
+    console.log("Loading Sound");
+    const { sound } = await Audio.Sound.createAsync({ uri: itemLinkAudio });
+    setSound(sound);
 
-  //   return () => TrackPlayer.destroy();
-  // }, []);
+    console.log("Playing Sound");
+    await sound.playAsync();
+  }
+
+  async function pauseSound() {
+    if (sound) {
+      console.log("Pausing sound");
+      await sound.pauseAsync();
+    }
+  }
+
+  async function toggleSound() {
+    if (sound) {
+      if (isPlaying) {
+        console.log("Pausing sound");
+        await sound.pauseAsync();
+        setPlaying(false);
+      } else {
+        console.log("Playing Sound");
+        await sound.playAsync();
+        setPlaying(true);
+      }
+    } else {
+      console.log("Loading Sound");
+      const { sound } = await Audio.Sound.createAsync({ uri: itemLinkAudio });
+      setSound(sound);
+      setPlaying(true);
+    }
+  }
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          console.log("Unloading Sound");
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
 
   return (
     <ImageBackground
@@ -83,22 +116,57 @@ export default PlayScreen = ({ route, navigation }) => {
         </View>
         <View style={styles.player}>
           <Image source={require("icon/line.png")} style={styles.playerLine} />
+          <View style={styles.duration}>
+            <Text style={styles.leftTxt}>00:00</Text>
+            <Text style={styles.rightTxt}>20:00</Text>
+          </View>
           <View>
             <Pressable>
               <Image />
             </Pressable>
           </View>
-          <View>
-            <Pressable>
-              <Text>Play</Text>
+          <View style={styles.playBtn}>
+            <Pressable style={styles.playBack}>
+              <Image
+                source={require("icon/back10.png")}
+                style={styles.playIcon}
+              />
             </Pressable>
-            <Pressable>
-              <Text>Pause</Text>
+            <Pressable style={styles.playBackM} onPress={toggleSound}>
+              <Image
+                source={
+                  !isPlaying
+                    ? require("icon/play.png")
+                    : require("icon/pause.png")
+                }
+                style={styles.playIcon}
+              />
+            </Pressable>
+            <Pressable style={styles.playBack} onPress={pauseSound}>
+              <Image
+                source={require("icon/next10.png")}
+                style={styles.playIcon}
+              />
             </Pressable>
           </View>
         </View>
       </View>
-      <View style={styles.footer}></View>
+      <View style={styles.footer}>
+        <Pressable style={styles.bottomBtn}>
+          <Image source={require("icon/list.png")} style={styles.bottomImg} />
+        </Pressable>
+        <Pressable style={styles.bottomBtn} onPress={() => setSaved(!isSaved)}>
+          <Image
+            source={
+              !isSaved ? require("icon/save.png") : require("icon/saved.png")
+            }
+            style={styles.bottomImg}
+          />
+        </Pressable>
+        <Pressable style={styles.bottomBtn}>
+          <Image source={require("icon/share1.png")} style={styles.bottomImg} />
+        </Pressable>
+      </View>
     </ImageBackground>
   );
 };
@@ -169,10 +237,81 @@ const styles = StyleSheet.create({
     marginTop: 10,
     height: 22,
   },
+  player: {
+    width: "100%",
+  },
   playerLine: {
-    width: 237,
+    width: 327,
     height: 4,
   },
+  duration: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 15,
+    marginBottom: 15,
+  },
+  leftTxt: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: "400",
+    color: "white",
+  },
+  rightTxt: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: "400",
+    color: "white",
+  },
+  playBtn: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  playIcon: {
+    width: 24,
+    height: 24,
+  },
+  playIconM: {
+    width: 22,
+    height: 22,
+  },
+  playBack: {
+    width: 72,
+    height: 72,
+    borderRadius: 16,
+    backgroundColor: "rgba(0, 0, 0, 0.07)",
+    padding: 24,
+    marginTop: 8,
+  },
+  playBackM: {
+    width: 88,
+    height: 88,
+    borderRadius: 16,
+    backgroundColor: "rgba(0, 0, 0, 0.07)",
+    padding: 32,
+    marginLeft: 16,
+    marginRight: 16,
+  },
 
-  footer: {},
+  footer: {
+    flexDirection: "row",
+    width: 184,
+    height: 40,
+    gap: 32,
+    alignSelf: "center",
+    marginBottom: "auto",
+    position: "absolute",
+    bottom: 30,
+  },
+  bottomBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 16,
+    padding: 8,
+    gap: 8,
+    backgroundColor: "rgba(0, 0, 0, 0.07)",
+  },
+  bottomImg: {
+    width: 24,
+    height: 24,
+  },
 });
