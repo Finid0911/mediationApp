@@ -7,6 +7,7 @@ import {
   Image,
   SafeAreaView,
   FlatList,
+  ScrollView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import ItemHome from "components/common/ItemHome";
@@ -25,7 +26,7 @@ const MainScreen = ({ navigation }) => {
           params: {
             cate_id: 1,
             page_no: 1,
-            page_size: 10,
+            page_size: 5,
             moq: moq,
           },
         });
@@ -38,49 +39,15 @@ const MainScreen = ({ navigation }) => {
   });
 
   if (!data) {
-    return <Text>Loading...still Loading</Text>;
+    return (
+      <Text style={{ alignSelf: "center", justifyContent: "center" }}>
+        Loading...
+      </Text>
+    );
   }
 
   const handleItemPress = (itemId) => {
     navigation.navigate("Detail", { itemId });
-  };
-
-  const body = () => {
-    return (
-      <View>
-        <View style={styles.body}>
-          <View style={styles.circle}>
-            <View style={styles.topContent}>
-              <Text style={styles.bNameText}>Thời gian thiền</Text>
-              <Text style={styles.bTimeText}>00:00</Text>
-              <View style={styles.iconPallete}>
-                <Image
-                  source={require("icon/mediation.png")}
-                  style={styles.icon}
-                />
-                <Text style={styles.palText}>0/2</Text>
-              </View>
-            </View>
-            <View style={styles.bottomContent}>
-              <LinearGradient
-                colors={["#4681F2", "#8A47F7"]}
-                style={styles.linearContainer}
-              >
-                <Pressable
-                  onPress={() => console.log("Start mediate!")}
-                  style={styles.startBtn}
-                >
-                  <Text style={styles.startTxt}>Bắt đầu thiền</Text>
-                </Pressable>
-              </LinearGradient>
-            </View>
-          </View>
-        </View>
-        <View style={styles.listTitle}>
-          <Text style={styles.hItemText}>Dành cho bạn</Text>
-        </View>
-      </View>
-    );
   };
 
   return (
@@ -89,45 +56,61 @@ const MainScreen = ({ navigation }) => {
         source={require("backgroundImg/bg.jpg")}
         style={styles.imgBackground}
       >
-        <View>
-          <View style={styles.header}>
-            <View style={styles.headerText}>
-              <Text style={styles.hItemText}>Xin chào,</Text>
-              <Text style={styles.hNameText}>Bạn của tôi</Text>
-            </View>
-            <View style={styles.headerBtn}>
-              <LinearGradient
-                colors={["#4681F2", "#8A47F7"]}
-                style={styles.hItemBtn}
-              >
-                <Pressable>
-                  <Text style={styles.hItemText} onPress={handleItemPress}>
-                    Đăng ký
-                  </Text>
-                </Pressable>
-              </LinearGradient>
+        <View style={styles.header}>
+          <View style={styles.headerText}>
+            <Text style={styles.hItemText}>Xin chào,</Text>
+            <Text style={styles.hNameText}>Bạn của tôi</Text>
+          </View>
+          <View style={styles.headerBtn}>
+            <LinearGradient
+              colors={["#4681F2", "#8A47F7"]}
+              style={styles.hItemBtn}
+            >
+              <Pressable>
+                <Text style={styles.hItemText} onPress={handleItemPress}>
+                  Đăng ký
+                </Text>
+              </Pressable>
+            </LinearGradient>
+          </View>
+        </View>
+        <ScrollView style={styles.sView}>
+          <View style={styles.body}>
+            <View style={styles.circle}>
+              <View style={styles.topContent}>
+                <Text style={styles.bNameText}>Thời gian thiền</Text>
+                <Text style={styles.bTimeText}>00:00</Text>
+                <View style={styles.iconPallete}>
+                  <Image
+                    source={require("icon/mediation.png")}
+                    style={styles.icon}
+                  />
+                  <Text style={styles.palText}>0/2</Text>
+                </View>
+              </View>
+              <View style={styles.bottomContent}>
+                <LinearGradient
+                  colors={["#4681F2", "#8A47F7"]}
+                  style={styles.linearContainer}
+                >
+                  <Pressable
+                    onPress={() => console.log("Start mediate!")}
+                    style={styles.startBtn}
+                  >
+                    <Text style={styles.startTxt}>Bắt đầu thiền</Text>
+                  </Pressable>
+                </LinearGradient>
+              </View>
             </View>
           </View>
-
+          <View style={styles.listTitle}>
+            <Text style={styles.hItemText}>Dành cho bạn</Text>
+          </View>
           <View style={styles.listSeries}>
-            {/* <Text style={styles.hItemText}>Dành cho bạn</Text> */}
-            {/* <ScrollView contentInsetAdjustmentBehavior="automatic">
-                  {data.map((item) => (
-                    <ItemHome
-                      title={item.name}
-                      duration={item.duration}
-                      num_audio={item.number_audio}
-                      like={item.like}
-                      thumb={item.thumb}
-                      author_name={item.author_name}
-                    />
-                  ))}
-                  <ItemHome title />
-                </ScrollView> */}
             <FlatList
+              scrollEnabled={false}
               data={data}
               keyExtractor={(item) => item.id}
-              ListHeaderComponent={body}
               renderItem={({ item }) => (
                 <ItemHome
                   item={item}
@@ -137,11 +120,11 @@ const MainScreen = ({ navigation }) => {
                 />
               )}
             />
-            <Pressable>
-              <Text>Khám phá</Text>
+            <Pressable style={styles.moreBtb}>
+              <Text style={{ color: "white", fontSize: 20 }}>Khám phá</Text>
             </Pressable>
           </View>
-        </View>
+        </ScrollView>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -158,12 +141,21 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
   },
+  sView: {
+    flex: 1,
+    // marginTop: 40,
+  },
   header: {
     flexDirection: "row",
     marginTop: 40,
     alignItems: "center",
     marginLeft: 20,
-    marginRight: 20,
+    // marginRight: 20,
+    // position: "absolute",
+    // top: 0,
+    // left: 0,
+    // right: 0,
+    // zIndex: 10,
   },
   headerText: {
     marginRight: "auto",
@@ -271,5 +263,11 @@ const styles = StyleSheet.create({
   },
   listTitle: {
     marginTop: 30,
+    marginLeft: 20,
+  },
+  moreBtb: {
+    width: 100,
+    height: 40,
+    backgroundColor: "red",
   },
 });

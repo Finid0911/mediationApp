@@ -22,11 +22,6 @@ const MainStackNav = () => {
         component={DetailScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="Play"
-        component={PlayScreen}
-        options={{ headerShown: false }}
-      />
     </Stack.Navigator>
   );
 };

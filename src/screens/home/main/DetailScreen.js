@@ -146,13 +146,14 @@ export default DetailScreen = ({ route, navigation }) => {
                 <VideoPlayView
                   item={item}
                   onPress={() => {
-                    navigation.navigate("Play", {
+                    navigation.navigate("PlayScreen", {
                       itemVidId: item.id,
                       itemAuthor: item.authors[0].name,
                       itemName: item.name,
                       itemDescription: item.description,
                       itemLinkAudio: item.link,
                       itemThumb: item.thumb,
+                      itemDuration: item.duration,
                     });
                   }}
                 />

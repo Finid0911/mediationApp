@@ -6,9 +6,11 @@ import {
   Text,
   Pressable,
 } from "react-native";
-import { API_URL } from "../../../config/api";
 import { useState, useEffect } from "react";
 import { Audio } from "expo-av";
+import Slider from "@react-native-community/slider";
+import formatTime from "../../../config/formatTime";
+import timeVidConverter from "../../../config/timeVidConverter";
 
 const tracks = [
   {
@@ -40,6 +42,7 @@ export default PlayScreen = ({ route, navigation }) => {
     itemDescription,
     itemLinkAudio,
     itemThumb,
+    itemDuration,
   } = route.params;
 
   const back = () => {
@@ -49,50 +52,74 @@ export default PlayScreen = ({ route, navigation }) => {
   const [sound, setSound] = useState();
   const [isPlaying, setPlaying] = useState(false);
   const [isSaved, setSaved] = useState(false);
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
 
-  async function playSound() {
-    console.log("Loading Sound");
-    const { sound } = await Audio.Sound.createAsync({ uri: itemLinkAudio });
-    setSound(sound);
+  // async function playSound() {
+  //   console.log("Loading Sound");
+  //   const { sound } = await Audio.Sound.createAsync({ uri: itemLinkAudio });
+  //   setSound(sound);
 
-    console.log("Playing Sound");
-    await sound.playAsync();
-  }
-
-  async function pauseSound() {
-    if (sound) {
-      console.log("Pausing sound");
-      await sound.pauseAsync();
-    }
-  }
+  //   console.log("Playing Sound");
+  //   await sound.playAsync();
+  // }
+  // async function pauseSound() {
+  //   if (sound) {
+  //     console.log("Pausing sound");
+  //     await sound.pauseAsync();
+  //   }
+  // }
 
   async function toggleSound() {
+    console.log("Loading Sound");
+    const { sound, status } = await Audio.Sound.createAsync({
+      uri: itemLinkAudio,
+    });
     if (sound) {
-      if (isPlaying) {
+      if (!isPlaying) {
+        console.log("Playing Sound");
+        await sound.playAsync();
+        setSound(sound);
+        setPlaying(true);
+        setDuration(status.durationMillis);
+      } else {
         console.log("Pausing sound");
         await sound.pauseAsync();
         setPlaying(false);
-      } else {
-        console.log("Playing Sound");
-        await sound.playAsync();
-        setPlaying(true);
       }
     } else {
       console.log("Loading Sound");
-      const { sound } = await Audio.Sound.createAsync({ uri: itemLinkAudio });
-      setSound(sound);
-      setPlaying(true);
+      const { sound, status } = await Audio.Sound.createAsync({
+        uri: itemLinkAudio,
+      });
     }
   }
 
+  // useEffect(() => {
+  //   return sound
+  //     ? () => {
+  //         console.log("Unloading Sound");
+  //         sound.unloadAsync();
+  //       }
+  //     : undefined;
+  // }, [sound]);
+
   useEffect(() => {
-    return sound
-      ? () => {
-          console.log("Unloading Sound");
-          sound.unloadAsync();
-        }
-      : undefined;
+    if (sound) {
+      const interval = setInterval(async () => {
+        const playbackStatus = await sound.getStatusAsync();
+        setPosition(playbackStatus.positionMillis);
+      }, 100);
+      return () => clearInterval(interval);
+    }
   }, [sound]);
+
+  async function seekTo(position) {
+    if (sound) {
+      await sound.setPositionAsync(position);
+      setPosition(position);
+    }
+  }
 
   return (
     <ImageBackground
@@ -115,10 +142,21 @@ export default PlayScreen = ({ route, navigation }) => {
           </View>
         </View>
         <View style={styles.player}>
-          <Image source={require("icon/line.png")} style={styles.playerLine} />
+          {/* <Image source={require("icon/line.png")} style={styles.playerLine} /> */}
+          <Slider
+            style={styles.playerLine}
+            minimumValue={0}
+            maximumValue={duration}
+            value={position}
+            onSlidingComplete={(value) => seekTo(value)}
+            minimumTrackTintColor="white"
+            thumbTintColor="white"
+          />
           <View style={styles.duration}>
-            <Text style={styles.leftTxt}>00:00</Text>
-            <Text style={styles.rightTxt}>20:00</Text>
+            <Text style={styles.leftTxt}>{formatTime(position)}</Text>
+            <Text style={styles.rightTxt}>
+              {timeVidConverter(itemDuration)}
+            </Text>
           </View>
           <View>
             <Pressable>
@@ -142,7 +180,7 @@ export default PlayScreen = ({ route, navigation }) => {
                 style={styles.playIcon}
               />
             </Pressable>
-            <Pressable style={styles.playBack} onPress={pauseSound}>
+            <Pressable style={styles.playBack}>
               <Image
                 source={require("icon/next10.png")}
                 style={styles.playIcon}
@@ -241,8 +279,10 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   playerLine: {
-    width: 327,
+    width: 357,
     height: 4,
+    alignSelf: "center",
+    color: "white",
   },
   duration: {
     flexDirection: "row",

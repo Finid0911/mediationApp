@@ -6,6 +6,7 @@ import SignUpScreen1 from "./src/screens/signup/SignUpInputScreen";
 import LoginScreen from "./src/screens/login/LoginScreen";
 import LoginScreen1 from "./src/screens/login/LoginInputScreen";
 import HomeLayout from "./src/screens/home/HomeLayout";
+import PlayScreen from "./src/screens/home/main/PlayScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +36,11 @@ function StackScreen() {
       <Stack.Screen
         name="HomeLayout"
         component={HomeLayout}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PlayScreen"
+        component={PlayScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
