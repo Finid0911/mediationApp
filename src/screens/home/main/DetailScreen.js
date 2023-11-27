@@ -148,12 +148,14 @@ export default DetailScreen = ({ route, navigation }) => {
                   onPress={() => {
                     navigation.navigate("PlayScreen", {
                       itemVidId: item.id,
+                      itemIdd: itemId,
                       itemAuthor: item.authors[0].name,
                       itemName: item.name,
                       itemDescription: item.description,
                       itemLinkAudio: item.link,
                       itemThumb: item.thumb,
                       itemDuration: item.duration,
+                      numAudio: data.number_audio,
                     });
                   }}
                 />
