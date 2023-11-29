@@ -30,6 +30,7 @@ export default PlayScreen = ({ route, navigation }) => {
     itemThumb,
     itemDuration,
     numAudio,
+    authorId,
   } = route.params;
 
   const [sound, setSound] = useState();
@@ -46,10 +47,6 @@ export default PlayScreen = ({ route, navigation }) => {
 
   const closePopUp = () => {
     setVisibleModal(!visibleModal);
-  };
-
-  const next10sec = () => {
-    setDuration();
   };
 
   // async function toggleSound() {
@@ -120,6 +117,30 @@ export default PlayScreen = ({ route, navigation }) => {
     }
   }
 
+  async function seekForward() {
+    if (sound) {
+      const status = await sound.getStatusAsync();
+      const newPosition = Math.min(
+        status.positionMillis + 10000,
+        status.durationMillis
+      );
+      await sound.setPositionAsync(newPosition);
+      setPosition(newPosition);
+    }
+  }
+
+  async function seekBackward() {
+    if (sound) {
+      const status = await sound.getStatusAsync();
+      const newPosition = Math.min(
+        status.positionMillis - 10000,
+        status.durationMillis
+      );
+      await sound.setPositionAsync(newPosition);
+      setPosition(newPosition);
+    }
+  }
+
   useEffect(() => {
     const fetchVidData = async () => {
       try {
@@ -159,13 +180,21 @@ export default PlayScreen = ({ route, navigation }) => {
         <View style={styles.content}>
           <Image source={{ uri: itemThumb }} style={styles.thumbnail} />
           <View style={styles.contentText}>
-            <Text style={styles.authorTxt}>{itemAuthor}</Text>
+            <Pressable
+              onPress={() =>
+                navigation.navigate("AuthorScreen", {
+                  authorId: authorId,
+                  itemAuthor: itemAuthor,
+                })
+              }
+            >
+              <Text style={styles.authorTxt}>{itemAuthor}</Text>
+            </Pressable>
             <Text style={styles.lessionTxt}>{itemName}</Text>
             <Text style={styles.descriptionTxt}>{itemDescription}</Text>
           </View>
         </View>
         <View style={styles.player}>
-          {/* <Image source={require("icon/line.png")} style={styles.playerLine} /> */}
           <Slider
             style={styles.playerLine}
             minimumValue={0}
@@ -174,6 +203,7 @@ export default PlayScreen = ({ route, navigation }) => {
             onSlidingComplete={(value) => seekTo(value)}
             minimumTrackTintColor="white"
             thumbTintColor="white"
+            thumbTouchSize={{ width: 50, height: 50 }}
           />
           <View style={styles.duration}>
             <Text style={styles.leftTxt}>{formatTime(position)}</Text>
@@ -187,7 +217,7 @@ export default PlayScreen = ({ route, navigation }) => {
             </Pressable>
           </View>
           <View style={styles.playBtn}>
-            <Pressable style={styles.playBack}>
+            <Pressable style={styles.playBack} onPress={seekBackward}>
               <Image
                 source={require("icon/back10.png")}
                 style={styles.playIcon}
@@ -203,7 +233,7 @@ export default PlayScreen = ({ route, navigation }) => {
                 style={styles.playIcon}
               />
             </Pressable>
-            <Pressable style={styles.playBack}>
+            <Pressable style={styles.playBack} onPress={seekForward}>
               <Image
                 source={require("icon/next10.png")}
                 style={styles.playIcon}

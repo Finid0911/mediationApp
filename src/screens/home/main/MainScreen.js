@@ -115,7 +115,10 @@ const MainScreen = ({ navigation }) => {
                 <ItemHome
                   item={item}
                   onPress={() => {
-                    navigation.navigate("Detail", { itemId: item.id });
+                    navigation.navigate("Detail", {
+                      itemId: item.id,
+                      authorId: item.authors[0].id,
+                    });
                   }}
                 />
               )}
