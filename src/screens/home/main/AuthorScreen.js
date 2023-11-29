@@ -35,12 +35,11 @@ export default AuthorScreen = ({ route, navigation }) => {
             dev: 1,
           },
         });
-        setData(response.data.data);
+        setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-    console.log(data);
 
     const fetchAuthorDetail = async () => {
       try {
@@ -64,9 +63,7 @@ export default AuthorScreen = ({ route, navigation }) => {
     fetchAuthorDetail();
   }, []);
 
-  console.log(data);
-
-  if (!data) {
+  if (!data && !auData) {
     return (
       <Text style={{ alignItems: "center", justifyContent: "center" }}>
         Loading...
@@ -77,6 +74,8 @@ export default AuthorScreen = ({ route, navigation }) => {
   const back = () => {
     navigation.goBack();
   };
+
+  console.log(data?.data);
 
   return (
     <View style={styles.container}>
@@ -89,14 +88,23 @@ export default AuthorScreen = ({ route, navigation }) => {
         <ScrollView style={styles.scrollView}>
           <View style={styles.infoView}>
             <View style={styles.circleThumb}>
-              <Image source={{ uri: auData.thumb }} style={styles.thumb} />
-              {/* <Image
-                source={require("backgroundImg/vidImg.png")}
-                style={styles.thumb}
-              /> */}
+              {auData?.thumb ? (
+                <Image
+                  source={{
+                    uri: auData.thumb,
+                  }}
+                  style={styles.thumb}
+                />
+              ) : (
+                <Image
+                  source={{
+                    uri: "https://cdn-icons-png.flaticon.com/512/3088/3088765.png",
+                  }}
+                />
+              )}
             </View>
             <Text style={[styles.text]}>Tác giả</Text>
-            <Text style={[styles.text, styles.author]}>{auData.name}</Text>
+            <Text style={[styles.text, styles.author]}>{auData?.name}</Text>
             <LinearGradient
               colors={["#4681F2", "#8A47F7"]}
               style={styles.followBtn}
@@ -106,7 +114,7 @@ export default AuthorScreen = ({ route, navigation }) => {
               </Pressable>
             </LinearGradient>
             <RenderHTML
-              source={{ html: auData.description }}
+              source={{ html: auData?.description }}
               contentWidth={width}
               baseStyle={styles.text}
             />
@@ -116,11 +124,14 @@ export default AuthorScreen = ({ route, navigation }) => {
               <Text style={[styles.text]}>Xem thêm</Text>
             </Pressable>
             <Text style={[styles.text, styles.guideText]}>
-              Hướng dẫn ({data.total})
+              Hướng dẫn ({data?.total})
+              <Text>
+                {!data?.data.duration ? data?.data.duration : data?.total}
+              </Text>
             </Text>
-            <FlatList
+            {/* <FlatList
               scrollEnabled={false}
-              data={data}
+              data={data?.data}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <ItemHome
@@ -133,7 +144,7 @@ export default AuthorScreen = ({ route, navigation }) => {
                   }}
                 />
               )}
-            />
+            /> */}
           </View>
         </ScrollView>
       </View>

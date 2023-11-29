@@ -136,31 +136,32 @@ export default DetailScreen = ({ route, navigation }) => {
           </View>
           <View style={style.content}>
             <Text style={style.vidNum}>Bài giảng ({data.number_audio})</Text>
-
-            <FlatList
-              scrollEnabled={false}
-              data={vidData}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <VideoPlayView
-                  item={item}
-                  onPress={() => {
-                    navigation.navigate("PlayScreen", {
-                      itemVidId: item.id,
-                      itemIdd: itemId,
-                      itemAuthor: item.authors[0].name,
-                      itemName: item.name,
-                      itemDescription: item.description,
-                      itemLinkAudio: item.link,
-                      itemThumb: item.thumb,
-                      itemDuration: item.duration,
-                      numAudio: data.number_audio,
-                      authorId: authorId,
-                    });
-                  }}
-                />
-              )}
-            />
+            <View style={style.list}>
+              <FlatList
+                scrollEnabled={false}
+                data={vidData}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <VideoPlayView
+                    item={item}
+                    onPress={() => {
+                      navigation.navigate("PlayScreen", {
+                        itemVidId: item.id,
+                        itemIdd: itemId,
+                        itemAuthor: item.authors[0].name,
+                        itemName: item.name,
+                        itemDescription: item.description,
+                        itemLinkAudio: item.link,
+                        itemThumb: item.thumb,
+                        itemDuration: item.duration,
+                        numAudio: data.number_audio,
+                        authorId: authorId,
+                      });
+                    }}
+                  />
+                )}
+              />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -261,6 +262,7 @@ const style = StyleSheet.create({
   content: {
     marginLeft: 10,
     marginRight: 10,
+    // marginBottom: 30,
   },
   title: {
     color: "white",
@@ -288,11 +290,13 @@ const style = StyleSheet.create({
     color: "white",
     marginBottom: 20,
   },
-  videoContent: {},
   vidNum: {
     fontSize: 18,
     lineHeight: 20,
     color: "white",
     marginBottom: 20,
+  },
+  list: {
+    marginBottom: 65,
   },
 });

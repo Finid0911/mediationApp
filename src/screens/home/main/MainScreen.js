@@ -153,12 +153,6 @@ const styles = StyleSheet.create({
     marginTop: 40,
     alignItems: "center",
     marginLeft: 20,
-    // marginRight: 20,
-    // position: "absolute",
-    // top: 0,
-    // left: 0,
-    // right: 0,
-    // zIndex: 10,
   },
   headerText: {
     marginRight: "auto",
@@ -263,6 +257,7 @@ const styles = StyleSheet.create({
   listSeries: {
     alignSelf: "center",
     justifyContent: "center",
+    marginBottom: 30,
   },
   listTitle: {
     marginTop: 30,
