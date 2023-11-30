@@ -15,6 +15,7 @@ import axios from "axios";
 import ItemHome from "../../../components/common/ItemHome";
 import RenderHTML from "react-native-render-html";
 import { useQuery } from "react-query";
+import getRealTime from "../../../config/getRealTime";
 
 export default AuthorScreen = ({ route, navigation }) => {
   const { authorId } = route.params;
@@ -23,20 +24,27 @@ export default AuthorScreen = ({ route, navigation }) => {
   const { width, height } = Dimensions.get("screen");
   const [isFollowed, setFollow] = useState(false);
 
-  const { isLoading, isError, data } = useQuery("serriesData", async () => {
-    const response = await axios.get(`${API_URL}/getContentByAuthor`, {
-      params: {
-        account: 1,
-        author_id: authorId,
-        id: "01982yfho8ds7619",
-        os: "android",
-        secure_code: "01982yfho8ds7619and",
-        moq: moq,
-        dev: 1,
-      },
-    });
-    return response.data;
-  });
+  const { isLoading, isError, data, error } = useQuery(
+    "seriesData",
+    async () => {
+      try {
+        const response = await axios.get(`${API_URL}/getContentByAuthor`, {
+          params: {
+            account: 1,
+            author_id: authorId,
+            id: "01982yfho8ds7619",
+            os: "android",
+            secure_code: "01982yfho8ds7619and",
+            moq: moq,
+            dev: 1,
+          },
+        });
+        return response.data;
+      } catch (error) {
+        throw new Error("Error fetching series data!");
+      }
+    }
+  );
   if (isLoading) {
     <Text style={{ alignItems: "center", justifyContent: "center" }}>
       Loading.....
@@ -44,7 +52,7 @@ export default AuthorScreen = ({ route, navigation }) => {
   }
   if (isError) {
     <Text style={{ alignItems: "center", justifyContent: "center" }}>
-      Error Fetching Data!
+      Error Fetching Data! Try again!
     </Text>;
   }
 
@@ -90,7 +98,7 @@ export default AuthorScreen = ({ route, navigation }) => {
     fetchAuthorDetail();
   }, []);
 
-  if (!data && !auData) {
+  if (!auData) {
     return (
       <Text style={{ alignItems: "center", justifyContent: "center" }}>
         Loading...
@@ -101,9 +109,6 @@ export default AuthorScreen = ({ route, navigation }) => {
   const back = () => {
     navigation.goBack();
   };
-
-  console.log(data?.data);
-  console.log(data?.data[0].duration);
 
   return (
     <View style={styles.container}>
@@ -168,10 +173,10 @@ export default AuthorScreen = ({ route, navigation }) => {
             <Text style={[styles.text, styles.guideText]}>
               Hướng dẫn ({data?.total})
             </Text>
-            {/* <FlatList
+            <FlatList
               scrollEnabled={false}
               data={data?.data}
-              keyExtractor={(item) => item?.id.toString()}
+              keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <ItemHome
                   item={item}
@@ -183,7 +188,7 @@ export default AuthorScreen = ({ route, navigation }) => {
                   }}
                 />
               )}
-            /> */}
+            />
           </View>
         </ScrollView>
       </View>

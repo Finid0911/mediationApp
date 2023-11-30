@@ -15,6 +15,7 @@ import { API_URL } from "../../../config/api";
 import { moq } from "../../../config/api";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import getRealTime from "../../../config/getRealTime";
 
 const MainScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -79,7 +80,7 @@ const MainScreen = ({ navigation }) => {
             <View style={styles.circle}>
               <View style={styles.topContent}>
                 <Text style={styles.bNameText}>Thời gian thiền</Text>
-                <Text style={styles.bTimeText}>00:00</Text>
+                <Text style={styles.bTimeText}>{getRealTime()}</Text>
                 <View style={styles.iconPallete}>
                   <Image
                     source={require("icon/mediation.png")}

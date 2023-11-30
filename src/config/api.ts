@@ -4,4 +4,5 @@ export const API_URL = 'https://api.themindnow.com';
 
 export const TIME_OUT = 15000;
 
-export const moq = 3011;
+import getRealTime from "./getRealTime";
+export const moq = getRealTime();
