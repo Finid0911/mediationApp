@@ -14,32 +14,59 @@ import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
 import ItemHome from "../../../components/common/ItemHome";
 import RenderHTML from "react-native-render-html";
+import { useQuery } from "react-query";
 
 export default AuthorScreen = ({ route, navigation }) => {
   const { authorId } = route.params;
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState(null);
   const [auData, setAuData] = useState(null);
   const { width, height } = Dimensions.get("screen");
+  const [isFollowed, setFollow] = useState(false);
+
+  const { isLoading, isError, data } = useQuery("serriesData", async () => {
+    const response = await axios.get(`${API_URL}/getContentByAuthor`, {
+      params: {
+        account: 1,
+        author_id: authorId,
+        id: "01982yfho8ds7619",
+        os: "android",
+        secure_code: "01982yfho8ds7619and",
+        moq: moq,
+        dev: 1,
+      },
+    });
+    return response.data;
+  });
+  if (isLoading) {
+    <Text style={{ alignItems: "center", justifyContent: "center" }}>
+      Loading.....
+    </Text>;
+  }
+  if (isError) {
+    <Text style={{ alignItems: "center", justifyContent: "center" }}>
+      Error Fetching Data!
+    </Text>;
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/getContentByAuthor`, {
-          params: {
-            account: 1,
-            author_id: authorId,
-            id: "01982yfho8ds7619",
-            os: "android",
-            secure_code: "01982yfho8ds7619and",
-            moq: moq,
-            dev: 1,
-          },
-        });
-        setData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+    // const fetchData = async () => {
+    //   try {
+    //     const response = await axios.get(`${API_URL}/getContentByAuthor`, {
+    //       params: {
+    //         account: 1,
+    //         author_id: authorId,
+    //         id: "01982yfho8ds7619",
+    //         os: "android",
+    //         secure_code: "01982yfho8ds7619and",
+    //         moq: moq,
+    //         dev: 1,
+    //       },
+    //     });
+    //     setData(response.data);
+    //   } catch (error) {
+    //     console.error("Error fetching playlist data:", error);
+    //   }
+    // };
 
     const fetchAuthorDetail = async () => {
       try {
@@ -59,7 +86,7 @@ export default AuthorScreen = ({ route, navigation }) => {
       }
     };
 
-    fetchData();
+    // fetchData();
     fetchAuthorDetail();
   }, []);
 
@@ -76,6 +103,7 @@ export default AuthorScreen = ({ route, navigation }) => {
   };
 
   console.log(data?.data);
+  console.log(data?.data[0].duration);
 
   return (
     <View style={styles.container}>
@@ -105,14 +133,28 @@ export default AuthorScreen = ({ route, navigation }) => {
             </View>
             <Text style={[styles.text]}>Tác giả</Text>
             <Text style={[styles.text, styles.author]}>{auData?.name}</Text>
-            <LinearGradient
-              colors={["#4681F2", "#8A47F7"]}
-              style={styles.followBtn}
-            >
-              <Pressable>
-                <Text style={[styles.text]}>Theo dõi ngay</Text>
-              </Pressable>
-            </LinearGradient>
+
+            <Pressable onPress={() => setFollow(!isFollowed)}>
+              {!isFollowed ? (
+                <LinearGradient
+                  colors={["#4681F2", "#8A47F7"]}
+                  style={styles.followBtn}
+                >
+                  <Text style={[styles.text]}>Theo dõi ngay</Text>
+                </LinearGradient>
+              ) : (
+                <View style={styles.isChecked}>
+                  <Image
+                    source={require("icon/follow.png")}
+                    style={styles.checkIcon}
+                  />
+                  <Text style={[styles.text, styles.followText]}>
+                    Đang theo dõi
+                  </Text>
+                </View>
+              )}
+            </Pressable>
+
             <RenderHTML
               source={{ html: auData?.description }}
               contentWidth={width}
@@ -125,14 +167,11 @@ export default AuthorScreen = ({ route, navigation }) => {
             </Pressable>
             <Text style={[styles.text, styles.guideText]}>
               Hướng dẫn ({data?.total})
-              <Text>
-                {!data?.data.duration ? data?.data.duration : data?.total}
-              </Text>
             </Text>
             {/* <FlatList
               scrollEnabled={false}
               data={data?.data}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item?.id.toString()}
               renderItem={({ item }) => (
                 <ItemHome
                   item={item}
@@ -232,5 +271,30 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
     color: "white",
+  },
+  isChecked: {
+    flexDirection: "row",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "white",
+    paddingLeft: 24,
+    paddingRight: 24,
+    paddingTop: 12,
+    paddingBottom: 12,
+    gap: 8,
+    marginTop: 10,
+    width: 150,
+    justifyContent: "center",
+  },
+  checkIcon: {
+    width: 22,
+    height: 22,
+    gap: 10,
+    marginRight: 5,
+  },
+  followText: {
+    fontSize: 16,
+    fontWeight: "600",
+    lineHeight: 22,
   },
 });

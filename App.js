@@ -8,6 +8,7 @@ import LoginScreen1 from "./src/screens/login/LoginInputScreen";
 import HomeLayout from "./src/screens/home/HomeLayout";
 import PlayScreen from "./src/screens/home/main/PlayScreen";
 import AuthorScreen from "./src/screens/home/main/AuthorScreen";
+import { QueryClientProvider, QueryClient } from "react-query";
 
 const Stack = createNativeStackNavigator();
 
@@ -53,11 +54,15 @@ function StackScreen() {
   );
 }
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <NavigationContainer>
-      <StackScreen />
-    </NavigationContainer>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <StackScreen />
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 }
 
