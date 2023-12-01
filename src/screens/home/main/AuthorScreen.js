@@ -15,36 +15,44 @@ import axios from "axios";
 import ItemHome from "../../../components/common/ItemHome";
 import RenderHTML from "react-native-render-html";
 import { useQuery } from "react-query";
-import getRealTime from "../../../config/getRealTime";
 
 export default AuthorScreen = ({ route, navigation }) => {
   const { authorId } = route.params;
-  // const [data, setData] = useState(null);
-  const [auData, setAuData] = useState(null);
   const { width, height } = Dimensions.get("screen");
   const [isFollowed, setFollow] = useState(false);
 
-  const { isLoading, isError, data, error } = useQuery(
-    "seriesData",
-    async () => {
-      try {
-        const response = await axios.get(`${API_URL}/getContentByAuthor`, {
-          params: {
-            account: 1,
-            author_id: authorId,
-            id: "01982yfho8ds7619",
-            os: "android",
-            secure_code: "01982yfho8ds7619and",
-            moq: moq,
-            dev: 1,
-          },
-        });
-        return response.data;
-      } catch (error) {
-        throw new Error("Error fetching series data!");
-      }
-    }
-  );
+  const getSeries = async () =>
+    await axios.get(`${API_URL}/getContentByAuthor`, {
+      params: {
+        account: 1,
+        author_id: authorId,
+        id: "01982yfho8ds7619",
+        os: "android",
+        secure_code: "01982yfho8ds7619and",
+        moq: moq,
+        dev: 1,
+      },
+    });
+
+  const getAuData = async () =>
+    await axios.get(`${API_URL}/getAuthorDetail`, {
+      params: {
+        account: 1,
+        author_id: authorId,
+        id: "01982yfho8ds7619",
+        os: "android",
+        secure_code: "019and82yfho8ds7619",
+        moq: moq,
+      },
+    });
+
+  const { isLoading, isError, data } = useQuery({
+    queryKey: ["seriesData"],
+    queryFn: getSeries,
+    onSuccess: (data) => {
+      console.log(data.data.data.length);
+    },
+  });
   if (isLoading) {
     <Text style={{ alignItems: "center", justifyContent: "center" }}>
       Loading.....
@@ -56,54 +64,26 @@ export default AuthorScreen = ({ route, navigation }) => {
     </Text>;
   }
 
-  useEffect(() => {
-    // const fetchData = async () => {
-    //   try {
-    //     const response = await axios.get(`${API_URL}/getContentByAuthor`, {
-    //       params: {
-    //         account: 1,
-    //         author_id: authorId,
-    //         id: "01982yfho8ds7619",
-    //         os: "android",
-    //         secure_code: "01982yfho8ds7619and",
-    //         moq: moq,
-    //         dev: 1,
-    //       },
-    //     });
-    //     setData(response.data);
-    //   } catch (error) {
-    //     console.error("Error fetching playlist data:", error);
-    //   }
-    // };
-
-    const fetchAuthorDetail = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/getAuthorDetail`, {
-          params: {
-            account: 1,
-            author_id: authorId,
-            id: "01982yfho8ds7619",
-            os: "android",
-            secure_code: "019and82yfho8ds7619",
-            moq: moq,
-          },
-        });
-        setAuData(response.data.data);
-      } catch (error) {
-        console.error("Error fetching author data: ", error);
-      }
-    };
-
-    // fetchData();
-    fetchAuthorDetail();
-  }, []);
-
-  if (!auData) {
-    return (
-      <Text style={{ alignItems: "center", justifyContent: "center" }}>
-        Loading...
-      </Text>
-    );
+  const {
+    isLoading: loading,
+    isError: error,
+    data: auData,
+  } = useQuery({
+    queryKey: ["auData"],
+    queryFn: getAuData,
+    onSuccess: (auData) => {
+      // console.log(auData.data.data);
+    },
+  });
+  if (loading) {
+    <Text style={{ alignItems: "center", justifyContent: "center" }}>
+      Loading.....
+    </Text>;
+  }
+  if (error) {
+    <Text style={{ alignItems: "center", justifyContent: "center" }}>
+      Error Fetching Data! Try again!
+    </Text>;
   }
 
   const back = () => {
@@ -121,11 +101,12 @@ export default AuthorScreen = ({ route, navigation }) => {
         <ScrollView style={styles.scrollView}>
           <View style={styles.infoView}>
             <View style={styles.circleThumb}>
-              {auData?.thumb ? (
+              {auData?.data.data.thumb ? (
                 <Image
                   source={{
-                    uri: auData.thumb,
+                    uri: auData?.data.data.thumb,
                   }}
+                  flat
                   style={styles.thumb}
                 />
               ) : (
@@ -137,7 +118,9 @@ export default AuthorScreen = ({ route, navigation }) => {
               )}
             </View>
             <Text style={[styles.text]}>Tác giả</Text>
-            <Text style={[styles.text, styles.author]}>{auData?.name}</Text>
+            <Text style={[styles.text, styles.author]}>
+              {auData?.data.data.name}
+            </Text>
 
             <Pressable onPress={() => setFollow(!isFollowed)}>
               {!isFollowed ? (
@@ -161,7 +144,7 @@ export default AuthorScreen = ({ route, navigation }) => {
             </Pressable>
 
             <RenderHTML
-              source={{ html: auData?.description }}
+              source={{ html: auData?.data.data.description }}
               contentWidth={width}
               baseStyle={styles.text}
             />
@@ -171,23 +154,26 @@ export default AuthorScreen = ({ route, navigation }) => {
               <Text style={[styles.text]}>Xem thêm</Text>
             </Pressable>
             <Text style={[styles.text, styles.guideText]}>
-              Hướng dẫn ({data?.total})
+              Hướng dẫn ({data?.data?.total || "null"})
             </Text>
             <FlatList
               scrollEnabled={false}
-              data={data?.data}
+              data={data?.data?.data || []}
               keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <ItemHome
-                  item={item}
-                  onPress={() => {
-                    navigation.navigate("Detail", {
-                      itemId: item.id,
-                      authorId: item.authors[0].id,
-                    });
-                  }}
-                />
-              )}
+              renderItem={({ item }) => {
+                console.log({ item });
+                return (
+                  <ItemHome
+                    item={item}
+                    authorName={auData?.data.data.name}
+                    onPress={() => {
+                      navigation.navigate("Detail", {
+                        itemId: item.id,
+                      });
+                    }}
+                  />
+                );
+              }}
             />
           </View>
         </ScrollView>
@@ -268,6 +254,7 @@ const styles = StyleSheet.create({
   },
   listView: {
     marginTop: 10,
+    marginBottom: 90,
   },
   guideText: {
     lineHeight: 24,

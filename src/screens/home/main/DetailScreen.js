@@ -21,7 +21,7 @@ import timeConverter from "../../../config/timeConverter";
 const { width, height } = Dimensions.get("screen");
 
 export default DetailScreen = ({ route, navigation }) => {
-  const { itemId, authorId } = route.params;
+  const { itemId } = route.params;
   const [data, setData] = useState(null);
   const [vidData, setVidData] = useState(null);
 
@@ -148,14 +148,14 @@ export default DetailScreen = ({ route, navigation }) => {
                       navigation.navigate("PlayScreen", {
                         itemVidId: item.id,
                         itemIdd: itemId,
-                        itemAuthor: item.authors[0].name,
+                        authorName: item.authors[0].name,
                         itemName: item.name,
                         itemDescription: item.description,
                         itemLinkAudio: item.link,
                         itemThumb: item.thumb,
                         itemDuration: item.duration,
                         numAudio: data.number_audio,
-                        authorId: authorId,
+                        authorId: item.authors[0].id,
                       });
                     }}
                   />

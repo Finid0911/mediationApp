@@ -1,8 +1,9 @@
 import { StyleSheet, View, Text, Image, Pressable } from "react-native";
 import timeConverter from "../../config/timeConverter";
 
-const ItemHome = ({ item, onPress }) => {
+const ItemHome = ({ item, onPress, authorName }) => {
   const time = timeConverter(item.duration);
+  // console.log(item.author);
   return (
     <Pressable style={styles.container} onPress={() => onPress(item.id)}>
       <View style={styles.bodyContainer}>
@@ -23,7 +24,11 @@ const ItemHome = ({ item, onPress }) => {
 
       <View style={styles.bottomContainer}>
         <Text style={styles.titleText}> {item.name} </Text>
-        <Text style={styles.authorText}> {item.authors[0].name} </Text>
+        {item.authors?.[0]?.name ? (
+          <Text style={styles.authorText}> {item.authors[0].name} </Text>
+        ) : (
+          <Text style={styles.authorText}> {authorName} </Text>
+        )}
       </View>
     </Pressable>
   );

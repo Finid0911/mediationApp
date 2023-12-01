@@ -21,15 +21,14 @@ import VideoPlayView from "../../../components/common/VideoPlayView";
 
 export default PlayScreen = ({ route, navigation }) => {
   const {
-    itemVidId,
     itemIdd,
-    itemAuthor,
     itemName,
     itemDescription,
     itemLinkAudio,
     itemThumb,
     itemDuration,
     numAudio,
+    authorName,
     authorId,
   } = route.params;
 
@@ -48,30 +47,6 @@ export default PlayScreen = ({ route, navigation }) => {
   const closePopUp = () => {
     setVisibleModal(!visibleModal);
   };
-
-  // async function toggleSound() {
-  //   console.log("Loading Sound");
-  //   const { sound, status } = await Audio.Sound.createAsync({
-  //     uri: itemLinkAudio,
-  //   });
-  //   if (sound) {
-  //     console.log("Load successfully!");
-  //     setSound(sound);
-  //     if (!isPlaying) {
-  //       console.log("Playing sound!");
-  //       await sound.playAsync();
-  //       setPlaying(true);
-  //       setDuration(status.durationMillis);
-  //     } else {
-  //       console.log("Pausing sound!");
-  //       await sound.pauseAsync();
-  //       setPlaying(false);
-  //       setDuration(status.durationMillis);
-  //     }
-  //   } else {
-  //     console.log("Load unsuccessfully!");
-  //   }
-  // }
 
   async function toggleSound() {
     if (sound) {
@@ -126,6 +101,7 @@ export default PlayScreen = ({ route, navigation }) => {
       );
       await sound.setPositionAsync(newPosition);
       setPosition(newPosition);
+      console.log("Next 10 seconds");
     }
   }
 
@@ -138,6 +114,7 @@ export default PlayScreen = ({ route, navigation }) => {
       );
       await sound.setPositionAsync(newPosition);
       setPosition(newPosition);
+      console.log("Back 10 seconds");
     }
   }
 
@@ -163,7 +140,7 @@ export default PlayScreen = ({ route, navigation }) => {
     };
 
     fetchVidData();
-  }, []);
+  });
 
   return (
     <ImageBackground
@@ -184,11 +161,11 @@ export default PlayScreen = ({ route, navigation }) => {
               onPress={() =>
                 navigation.navigate("AuthorScreen", {
                   authorId: authorId,
-                  itemAuthor: itemAuthor,
+                  itemAuthor: authorName,
                 })
               }
             >
-              <Text style={styles.authorTxt}>{itemAuthor}</Text>
+              <Text style={styles.authorTxt}>{authorName}</Text>
             </Pressable>
             <Text style={styles.lessionTxt}>{itemName}</Text>
             <Text style={styles.descriptionTxt}>{itemDescription}</Text>

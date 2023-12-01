@@ -16,6 +16,7 @@ import { moq } from "../../../config/api";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import getRealTime from "../../../config/getRealTime";
+import LottieView from "lottie-react-native";
 
 const MainScreen = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -47,10 +48,6 @@ const MainScreen = ({ navigation }) => {
     );
   }
 
-  const handleItemPress = (itemId) => {
-    navigation.navigate("Detail", { itemId });
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -68,7 +65,10 @@ const MainScreen = ({ navigation }) => {
               style={styles.hItemBtn}
             >
               <Pressable>
-                <Text style={styles.hItemText} onPress={handleItemPress}>
+                <Text
+                  style={styles.hItemText}
+                  onPress={() => navigation.navigate("SignUpScreen1")}
+                >
                   Đăng ký
                 </Text>
               </Pressable>
@@ -118,7 +118,6 @@ const MainScreen = ({ navigation }) => {
                   onPress={() => {
                     navigation.navigate("Detail", {
                       itemId: item.id,
-                      authorId: item.authors[0].id,
                     });
                   }}
                 />
@@ -168,6 +167,7 @@ const styles = StyleSheet.create({
   },
   headerBtn: {
     marginLeft: "auto",
+    marginRight: 15,
   },
   hItemBtn: {
     padding: 10,
