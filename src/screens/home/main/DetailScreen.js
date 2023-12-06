@@ -24,6 +24,7 @@ export default DetailScreen = ({ route, navigation }) => {
   const { itemId } = route.params;
   const [data, setData] = useState(null);
   const [vidData, setVidData] = useState(null);
+  console.log(itemId);
 
   useEffect(() => {
     const fetchData = async () => {

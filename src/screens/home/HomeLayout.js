@@ -54,7 +54,6 @@ const MyTabs = () => {
 const HomeLayout = () => {
   return (
     // <NavigationContainer>
-
     <MyTabs />
     // </NavigationContainer>
   );

@@ -50,7 +50,7 @@ export default AuthorScreen = ({ route, navigation }) => {
     queryKey: ["seriesData"],
     queryFn: getSeries,
     onSuccess: (data) => {
-      console.log(data.data.data.length);
+      // console.log(data.data.data.length);
     },
   });
   if (isLoading) {
@@ -161,7 +161,7 @@ export default AuthorScreen = ({ route, navigation }) => {
               data={data?.data?.data || []}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => {
-                console.log({ item });
+                // console.log({ item });
                 return (
                   <ItemHome
                     item={item}
