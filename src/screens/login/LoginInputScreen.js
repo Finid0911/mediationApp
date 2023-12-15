@@ -7,29 +7,53 @@ import {
   TextInput,
   TouchableOpacity,
   Pressable,
+  Alert,
 } from "react-native";
 import CustomTextInput from "components/common/CustomTextInput";
 import CustomButton from "components/common/CustomButton";
-import { API_URL } from "../../config/api";
 import { validateEmail, validatePassword } from "../../config/validate";
-import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
+import { authService } from "../../api/auth.api";
+import { moq } from "../../config/api";
 
 function LoginScreen1({ navigation }) {
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [revealPassword, setRevealPassword] = useState(true);
 
-  const api_url = API_URL;
-  const loginData = {};
+  const handleLogin = async () => {
+    // try {
+    //   const response = await axios.post(`${api_url}/login?moq=1311&dev=1`, {
+    //     emailInput: emailInput,
+    //     passwordInput: passwordInput,
+    //   });
 
-  const handleLogin = () => {
-    axios
-      .post(`${api_url}/login?moq=0911&dev=1`)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => console.log(error));
+    //   if (response.data.success) {
+    //     navigation.navigate("HomeLayout");
+    //   } else {
+    //     Alert.alert("Login failed!");
+    //   }
+    // } catch (error) {
+    //   console.log("Error", error);
+    // }
+    try {
+      console.log("Log log");
+      const response = await authService.login(
+        {
+          account: 2,
+          email: "namnh3@vega.com.vn",
+          password: "Haokma2001",
+          id: "01982yfho8ds7619",
+          os: "android",
+        },
+        {
+          params: { moq: moq, dev: 1 },
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const onPress = () => {
@@ -112,7 +136,7 @@ function LoginScreen1({ navigation }) {
           colors={["#4681F2", "#8A47F7"]}
           style={styles.linearContent}
         >
-          <TouchableOpacity style={styles.continueBtn} onPress={onPress}>
+          <TouchableOpacity style={styles.continueBtn} onPress={handleLogin}>
             <Text style={styles.continueTxt}>Tiếp tục</Text>
           </TouchableOpacity>
         </LinearGradient>
